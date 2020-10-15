@@ -1,0 +1,10 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+    <h1>DagStats</h1>
+    <h3>Select a Dag to fetch the stats</h3>
+    <ol>
+        {% for entity in dags %}
+            <li>{{ entity }}</li>
+        {% endfor %}
+    </ol>
+{% endblock %}
