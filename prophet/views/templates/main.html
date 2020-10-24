@@ -1,10 +1,53 @@
 {% extends 'admin/master.html' %}
 {% block body %}
-    <h1>DagStats</h1>
-    <h3>Select a Dag to fetch the stats</h3>
-    <ol>
-        {% for entity in dags %}
-            <li>{{ entity }}</li>
-        {% endfor %}
-    </ol>
+<h1>DagStats</h1>
+<div class="container">
+    <div class="row">
+        <form class="navbar-form navbar-left" method="get">
+            Dag-ID: {{ form.dag_id(class_="form-control") }}
+            Number Of Rows: {{ form.num_runs(class_="form-control") }}
+            <input type="submit" value="Generate Stats" class="btn btn-primary" action="" method="get">
+            <input type="hidden" name="root" value="{{ root if root else '' }}">
+            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+        </form>
+    </div>
+    <div class="row">
+        <div class="execution_time"></div>
+    </div>
+    <div class="row">
+        <h3>Run Details {% if selected_dag_id is not none %} for {{ selected_dag_id }} {% endif %}</h3>
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Execution Date</th>
+                <th>Run Id</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>State</th>
+                <th>Duration</th>
+            </tr>
+            {% for dag_run in dag_runs %}
+            <tr>
+                <td>{{ dag_run.execution_date }}</td>
+                <td>{{ dag_run.run_id }}</td>
+                <td>{{ dag_run.start_date }}</td>
+                <td>{{ dag_run.end_date }}</td>
+                <td>{{ dag_run.state }}</td>
+                {% if dag_run.state == 'running' %}
+                <td>0</td>
+                {% else %}
+                <td> {{ (dag_run.end_date - dag_run.start_date) }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<script>
+
+</script>
+
 {% endblock %}
